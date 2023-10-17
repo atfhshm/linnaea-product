@@ -81,7 +81,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 
 AUTHENTICATION_BACKENDS = [
-    # "django.contrib.auth.backends.ModelBackend",
+    "django.contrib.auth.backends.ModelBackend",
     "apps.users.auth_backend.EmailBackend",
 ]
 
@@ -219,3 +219,5 @@ if not DEBUG:
             "OPTIONS": {"location": "static"},
         },
     }
+
+TOKEN_EXPIRY_SECONDS = 60 * 5

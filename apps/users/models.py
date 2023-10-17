@@ -1,14 +1,19 @@
 from django.db import models
+from django.db.models import F
 from django.contrib.auth.models import (
     BaseUserManager,
     AbstractBaseUser,
     PermissionsMixin,
 )
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.conf import settings
 
 from dateutil.relativedelta import relativedelta
+from datetime import timedelta
+
+from secrets import token_urlsafe
 
 
 class UserManager(BaseUserManager):
@@ -95,5 +100,48 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return f"{self.email}"
 
+    @property
     def password_reset_required(self):
+        # return timezone.now() >= self.last_password_change + relativedelta(months=3)
         return self.last_password_change >= relativedelta(months=3) + timezone.now()
+
+
+class Token(models.Model):
+    token = models.CharField(
+        _("token"), max_length=6, unique=True, db_index=True, editable=False
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name=_("user"),
+        on_delete=models.CASCADE,
+        related_name="user_tokens",
+    )
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    expired_at = models.DateTimeField(_("expired_at"), editable=False)
+    is_used = models.BooleanField(_("is used"), default=False)
+
+    class Meta:
+        db_table = "tokens"
+        verbose_name = _("token")
+        verbose_name_plural = _("tokens")
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.pk:
+            self.token = self.generate_token()
+            self.expired_at = timezone.now() + timedelta(
+                seconds=settings.TOKEN_EXPIRY_SECONDS
+            )
+        return super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"{self.token}"
+
+    def generate_token(self):
+        return token_urlsafe(4)
+
+    @property
+    def is_valid(self):
+        return timezone.now() <= self.expired_at
+
+    def remove_expired_tokens(self) -> None:
+        Token.objects.filter(user=self.user, expired_at__lte=timezone.now()).delete()
