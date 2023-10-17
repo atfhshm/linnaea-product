@@ -1,0 +1,16 @@
+bpython
+django
+djangorestframework
+djangorestframework-simplejwt
+drf_spectacular
+django-cors-headers
+python-decouple
+pytest-django
+coverage
+dj-database-url
+psycopg[binary]
+gunicorn
+pillow
+django-storages[s3]
+whitenoise
+colorlog
