@@ -102,8 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def password_reset_required(self):
-        # return timezone.now() >= self.last_password_change + relativedelta(months=3)
-        return self.last_password_change >= relativedelta(months=3) + timezone.now()
+        return self.last_password_change + relativedelta(months=3) <= timezone.now()
 
 
 class Token(models.Model):

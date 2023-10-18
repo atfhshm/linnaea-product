@@ -34,6 +34,7 @@ class UserAdminConfig(UserAdmin):
         "is_staff",
         "is_superuser",
         "last_login",
+        "last_password_change",
     )
 
     add_fieldsets = (
