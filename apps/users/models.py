@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import F
 from django.contrib.auth.models import (
     BaseUserManager,
     AbstractBaseUser,
@@ -16,6 +15,13 @@ from datetime import timedelta
 from secrets import token_urlsafe
 
 
+class RoleChoices(models.TextChoices):
+    ORG_ADMIN = "ORG_ADMIN", "organization admin"
+    ORG_MANAGER = "ORG_MANAGER", "organization managers"
+    ORG_MEMBER = "ORG_MEMBERS", "organization member"
+    INTERNAL = "INTERNAL", "internal"
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         if not email:
@@ -23,7 +29,6 @@ class UserManager(BaseUserManager):
         if not extra_fields.get("phone_number", None):
             raise ValueError("phone number must be provided")
         email = self.normalize_email(email=email)
-
         user: User = self.model(
             email=email,
             **extra_fields,
@@ -74,6 +79,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         error_messages={
             "unique": _("A user with that email already exists."),
         },
+    )
+    role = models.CharField(
+        _("role"),
+        max_length=20,
+        choices=RoleChoices.choices,
+        default=RoleChoices.INTERNAL,
     )
     is_staff = models.BooleanField(_("staff status"), default=False)
     is_active = models.BooleanField(_("active"), default=True)

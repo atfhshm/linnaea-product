@@ -11,7 +11,7 @@ class UserAdminConfig(UserAdmin):
     fieldsets = (
         (
             "basic info",
-            {"fields": ("email", "username", "phone_number", "password")},
+            {"fields": ("email", "username", "phone_number", "role", "password")},
         ),
         (
             "personal info",
@@ -30,6 +30,7 @@ class UserAdminConfig(UserAdmin):
         "phone_number",
         "username",
         "date_joined",
+        "role",
         "is_active",
         "is_staff",
         "is_superuser",
@@ -48,17 +49,18 @@ class UserAdminConfig(UserAdmin):
                     "email",
                     "username",
                     "phone_number",
+                    "role",
                     "password1",
                     "password2",
-                    "is_staff",
                     "is_active",
+                    "is_staff",
                     "is_superuser",
                 ),
             },
         ),
     )
 
-    list_filter = ("is_active", "is_staff", "is_superuser")
+    list_filter = ("is_active", "is_staff", "is_superuser", "role")
     search_fields = ("phone_number", "email", "username")
     ordering = ("id", "email")
 

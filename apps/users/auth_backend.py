@@ -1,6 +1,6 @@
 from typing import Any
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.http.request import HttpRequest
 
 from django.db.models import Q
@@ -22,6 +22,7 @@ class EmailBackend(ModelBackend):
         if users.exists():
             user = users.first()
             if user.check_password(password):
+                login(request=request, user=user, backend="apps.users.auth_backend.EmailBackend")
                 return user
         else:
             return None

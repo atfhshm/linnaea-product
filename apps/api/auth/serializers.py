@@ -24,6 +24,7 @@ class TokensSerializer(serializers.Serializer):
 
 class TokenObtainPairResponseSerializer(serializers.ModelSerializer):
     tokens = serializers.SerializerMethodField()
+    password_reset_required = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -34,6 +35,7 @@ class TokenObtainPairResponseSerializer(serializers.ModelSerializer):
             "email",
             "username",
             "phone_number",
+            "password_reset_required",
             "tokens",
         )
 
@@ -42,6 +44,9 @@ class TokenObtainPairResponseSerializer(serializers.ModelSerializer):
         access = refresh.access_token
 
         return {"access": str(access), "refresh": str(refresh)}
+
+    def get_password_reset_required(self, obj: User) -> bool:
+        return obj.password_reset_required
 
 
 class TokenRefreshResponseSerializer(serializers.Serializer):

@@ -13,4 +13,7 @@ migrate: migrations
 su:
 	python manage.py createsuperuser
 
+collectstatic:
+	python manage.py collectstatic --noinput
+
 .PHONY: shell

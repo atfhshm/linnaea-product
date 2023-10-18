@@ -55,13 +55,6 @@ class TokenPairObtainView(APIView):
             )
         user = authenticate(request, email=login, password=password)
         if user:
-            password_reset_required = (
-                user.last_password_change >= relativedelta(months=3) + timezone.now()
-            )
-            if password_reset_required:
-                return Response(
-                    data="redirect to reset password", status=status.HTTP_303_SEE_OTHER
-                )
             user.last_login = timezone.now()
             user.save()
             serializer = TokenObtainPairResponseSerializer(instance=user)

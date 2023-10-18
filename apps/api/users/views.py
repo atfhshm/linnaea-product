@@ -17,7 +17,7 @@ from .serializers import (
     PasswordChangeSerializer,
 )
 
-from .schema_objects import invalid_register_object, invalid_password_object
+from .schema_errors import invalid_register_object, invalid_password_object
 
 __all__ = ["RegisterUserView", "GetOrUpdateUserDataView", "ChangePasswordView"]
 

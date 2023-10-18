@@ -198,6 +198,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
+TOKEN_EXPIRY_SECONDS = 60 * 5
+
 # production staticfile and media file storage configuration
 if not DEBUG:
     AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=None)
@@ -219,5 +221,3 @@ if not DEBUG:
             "OPTIONS": {"location": "static"},
         },
     }
-
-TOKEN_EXPIRY_SECONDS = 60 * 5
