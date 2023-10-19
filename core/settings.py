@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     # project-apps
-    "apps.users.apps.UsersConfig",
     "apps.api.apps.ApiConfig",
+    "apps.users.apps.UsersConfig",
+    "apps.organizations.apps.OrganizationsConfig",
+    "apps.tickets.apps.TicketsConfig"
 ]
 
 MIDDLEWARE = [
