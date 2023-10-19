@@ -76,6 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         _("phone number"),
         max_length=20,
         unique=True,
+        # TODO: Add regex validation on the phone number field
         error_messages={
             "unique": _("A user with that email already exists."),
         },

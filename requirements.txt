@@ -3,6 +3,7 @@ django
 djangorestframework
 djangorestframework-simplejwt
 drf_spectacular
+django-filter
 django-cors-headers
 python-decouple
 pytest-django

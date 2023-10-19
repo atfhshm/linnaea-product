@@ -40,11 +40,12 @@ INSTALLED_APPS = [
     "storages",
     "rest_framework",
     "drf_spectacular",
+    "django_filters",
     # project-apps
     "apps.api.apps.ApiConfig",
     "apps.users.apps.UsersConfig",
     "apps.organizations.apps.OrganizationsConfig",
-    "apps.tickets.apps.TicketsConfig"
+    "apps.tickets.apps.TicketsConfig",
 ]
 
 MIDDLEWARE = [
@@ -126,6 +127,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 # Configurations for drf_spectacular

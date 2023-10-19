@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -66,11 +67,15 @@ class TokenPairObtainView(APIView):
             )
 
 
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+
+
 @extend_schema(
     tags=["auth"],
+    #     request=TokenRefreshSerializer,
     responses={
         status.HTTP_200_OK: TokenRefreshResponseSerializer,
-        status.HTTP_406_NOT_ACCEPTABLE: inline_serializer(
+        status.HTTP_401_UNAUTHORIZED: inline_serializer(
             name="InvalidToken",
             fields={
                 "detail": serializers.CharField(max_length=30),
@@ -80,11 +85,15 @@ class TokenPairObtainView(APIView):
     },
     examples=[
         OpenApiExample(
+            response_only=True,
             name="INVALID_TOKEN",
-            status_codes=[status.HTTP_406_NOT_ACCEPTABLE],
+            status_codes=[status.HTTP_401_UNAUTHORIZED],
             value={"detail": "Token is invalid or expired", "code": "token_not_valid"},
         ),
     ],
 )
 class TokenRefreshObtainView(TokenRefreshView):
     permission_classes = [AllowAny]
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        return super().post(request, *args, **kwargs)
