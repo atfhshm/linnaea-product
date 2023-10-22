@@ -172,6 +172,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"]
 CORS_ALLOW_CREDENTIALS = True
 
+# Emails
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Internationalization
 
@@ -203,6 +206,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
 
 TOKEN_EXPIRY_SECONDS = 60 * 5
+INVITATION_EXPIRY_SECONDS = 60 * 60 * 24 * 10
 
 # production staticfile and media file storage configuration
 if not DEBUG:

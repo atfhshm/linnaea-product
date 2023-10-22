@@ -4,7 +4,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.validators import RegexValidator, MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.conf import settings
@@ -16,9 +16,9 @@ from secrets import token_urlsafe
 
 
 class RoleChoices(models.TextChoices):
+    ORG_OWNER = "ORG_OWNER", "Organization owner"
     ORG_ADMIN = "ORG_ADMIN", "Organization admin"
-    ORG_MANAGER = "ORG_MANAGER", "Organization managers"
-    ORG_MEMBER = "ORG_MEMBERS", "Organization member"
+    ORG_MEMBER = "ORG_MEMBER", "Organization member"
     INTERNAL = "INTERNAL", "Internal"
 
 
@@ -56,15 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(
         _("last name"), max_length=150, null=False, blank=False
     )
-    # username = models.CharField(
-    #     _("username"),
-    #     max_length=150,
-    #     unique=True,
-    #     validators=[UnicodeUsernameValidator],
-    #     error_messages={
-    #         "unique": _("A user with that username already exists."),
-    #     },
-    # )
     email = models.EmailField(
         _("email address"),
         unique=True,
@@ -76,7 +67,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         _("phone number"),
         max_length=20,
         unique=True,
-        # TODO: Add regex validation on the phone number field
+        validators=[
+            MinLengthValidator(11, message=_("The number should at least be 11 digit")),
+            RegexValidator(
+                "^(\+201|01|00201)[0-2,5]{1}[0-9]{8}",
+                message=_("Incorrect number format"),
+            ),
+        ],
         error_messages={
             "unique": _("A user with that email already exists."),
         },
@@ -114,7 +111,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def password_reset_required(self):
-        return self.last_password_change + relativedelta(months=3) <= timezone.now()
+        return timezone.now() >= self.last_password_change + relativedelta(months=3)
 
 
 class Token(models.Model):
