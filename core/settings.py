@@ -15,16 +15,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", cast=str, default=os.urandom(40).hex())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG")
+DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = []
 
 if not DEBUG:
-    ALLOWED_HOSTS.append(
-        config(
-            "ALLOWED_HOST",
-        )
-    )
+    ALLOWED_HOSTS.append(config("ALLOWED_HOST", cast=str))
 
 
 # Application definition
@@ -91,6 +87,9 @@ AUTHENTICATION_BACKENDS = [
 # Database
 
 DB_URL = config("DB_URL", cast=str)
+
+if not DEBUG:
+    DB_URL = config("PROD_DB_URL", cast=str)
 
 DATABASES = {
     "default": dj_database_url.parse(
@@ -209,23 +208,23 @@ TOKEN_EXPIRY_SECONDS = 60 * 5
 INVITATION_EXPIRY_SECONDS = 60 * 60 * 24 * 10
 
 # production staticfile and media file storage configuration
-if not DEBUG:
-    AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=None)
-    AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", default=None)
-    AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default=None)
-    AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")
-    AWS_S3_OBJECT_PARAMETERS = {
-        "CacheControl": "max-age=86400",
-    }
-    AWS_DEFAULT_ACL = "public-read"
+# if not DEBUG:
+#     AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", default=None)
+#     AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", default=None)
+#     AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default=None)
+#     AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")
+#     AWS_S3_OBJECT_PARAMETERS = {
+#         "CacheControl": "max-age=86400",
+#     }
+#     AWS_DEFAULT_ACL = "public-read"
 
-    STORAGES = {
-        "default": {
-            "BACKEND": "storages.backends.s3.S3Storage",
-            "OPTIONS": {"location": "uploads"},
-        },
-        "staticfiles": {
-            "BACKEND": "storages.backends.s3.S3Storage",
-            "OPTIONS": {"location": "static"},
-        },
-    }
+#     STORAGES = {
+#         "default": {
+#             "BACKEND": "storages.backends.s3.S3Storage",
+#             "OPTIONS": {"location": "uploads"},
+#         },
+#         "staticfiles": {
+#             "BACKEND": "storages.backends.s3.S3Storage",
+#             "OPTIONS": {"location": "static"},
+#         },
+#     }
