@@ -16,10 +16,10 @@ from secrets import token_urlsafe
 
 
 class RoleChoices(models.TextChoices):
-    ORG_ADMIN = "ORG_ADMIN", "organization admin"
-    ORG_MANAGER = "ORG_MANAGER", "organization managers"
-    ORG_MEMBER = "ORG_MEMBERS", "organization member"
-    INTERNAL = "INTERNAL", "internal"
+    ORG_ADMIN = "ORG_ADMIN", "Organization admin"
+    ORG_MANAGER = "ORG_MANAGER", "Organization managers"
+    ORG_MEMBER = "ORG_MEMBERS", "Organization member"
+    INTERNAL = "INTERNAL", "Internal"
 
 
 class UserManager(BaseUserManager):
@@ -56,15 +56,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(
         _("last name"), max_length=150, null=False, blank=False
     )
-    username = models.CharField(
-        _("username"),
-        max_length=150,
-        unique=True,
-        validators=[UnicodeUsernameValidator],
-        error_messages={
-            "unique": _("A user with that username already exists."),
-        },
-    )
+    # username = models.CharField(
+    #     _("username"),
+    #     max_length=150,
+    #     unique=True,
+    #     validators=[UnicodeUsernameValidator],
+    #     error_messages={
+    #         "unique": _("A user with that username already exists."),
+    #     },
+    # )
     email = models.EmailField(
         _("email address"),
         unique=True,
@@ -102,7 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "phone_number", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["phone_number", "first_name", "last_name"]
 
     class Meta:
         db_table = "users"
