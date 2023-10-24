@@ -33,7 +33,6 @@ class TokenObtainPairResponseSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
-            "username",
             "phone_number",
             "password_reset_required",
             "tokens",
